@@ -1,26 +1,172 @@
 @import "tailwindcss";
 
+/*
+  "Tinta & Ledger" — DiaryDesk is a diary (personal, handwritten) crossed
+  with a desk (structured, working). Paper/ink neutrals instead of stark
+  white/black; ink-blue as the one accent; category colors (dal.ts) are
+  reused everywhere as "thread" colors instead of introducing new hues.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eeede2; /* paper */
+  --foreground: #262218; /* iron-gall ink */
+  --accent: #33517f; /* ledger ink-blue */
+  --danger: #dc2626;
+
+  /* category "thread" colors — mirrors DEFAULT_TASK_CATEGORIES in dal.ts */
+  --thread-trabalho: #2563eb;
+  --thread-faculdade: #7c3aed;
+  --thread-amor: #db2777;
+  --thread-saude: #16a34a;
+  --thread-casa: #d97706;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-thread-trabalho: var(--thread-trabalho);
+  --color-thread-faculdade: var(--thread-faculdade);
+  --color-thread-amor: var(--thread-amor);
+  --color-thread-saude: var(--thread-saude);
+  --color-thread-casa: var(--thread-casa);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #15171b; /* closed ledger, ink-black */
+    --foreground: #ebe7da; /* parchment */
+    --accent: #86a9dc;
+    --danger: #f87171;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Faint ruled-paper lines behind the working area — a page, not decoration. */
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    color-mix(in srgb, var(--foreground) 7%, transparent) 27px,
+    color-mix(in srgb, var(--foreground) 7%, transparent) 28px
+  );
+}
+
+/*
+  Ribbon bookmark — the one signature motif. A thread-colored page marker,
+  like the ribbons sewn into a ledger's spine. Two placements: ribbon-nav
+  flags the current section in the sidebar; ribbon-card marks a card as an
+  unwritten page. Shape and shadow shared; position varies by use.
+*/
+.ribbon {
+  position: absolute;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
+}
+
+.ribbon-nav {
+  top: 50%;
+  right: -13px;
+  width: 15px;
+  height: 24px;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.ribbon-card {
+  top: -8px;
+  left: 28px;
+  width: 18px;
+  height: 28px;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
+}
+
+/* FullCalendar reskin: swap its default Bootstrap-ish look for ledger ink. */
+.fc-theme {
+  --fc-border-color: color-mix(in srgb, var(--foreground) 12%, transparent);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --fc-list-event-hover-bg-color: color-mix(
+    in srgb,
+    var(--foreground) 5%,
+    transparent
+  );
+  --fc-today-bg-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  --fc-button-bg-color: var(--foreground);
+  --fc-button-border-color: var(--foreground);
+  --fc-button-hover-bg-color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  --fc-button-hover-border-color: var(--foreground);
+  --fc-button-active-bg-color: var(--accent);
+  --fc-button-active-border-color: var(--accent);
+  --fc-button-text-color: var(--background);
+  font-family: var(--font-sans);
+}
+
+.fc-theme .fc-toolbar-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fc-theme .fc-button {
+  border-radius: 0.375rem;
+  text-transform: capitalize;
+  box-shadow: none !important;
+}
+
+.fc-theme .fc-col-header-cell-cushion {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  padding: 0.5rem 0;
+}
+
+.fc-theme .fc-daygrid-day-number {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.4rem;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+}
+
+.fc-theme .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.fc-theme .fc-event {
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.5px 2px;
 }
