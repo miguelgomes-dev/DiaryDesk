@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 
+const RECURRENCE_FREQUENCIES = ["none", "daily", "weekly", "monthly"] as const;
+type RecurrenceFrequency = (typeof RECURRENCE_FREQUENCIES)[number];
+
 function readTaskFields(formData: FormData) {
   const title = (formData.get("title") as string)?.trim();
   if (!title) {
@@ -23,13 +26,41 @@ function readTaskFields(formData: FormData) {
   const description = (formData.get("description") as string)?.trim() || null;
   const completed = formData.get("completed") === "on";
 
+  const recurrenceFrequencyRaw = (formData.get("recurrenceFrequency") as string) || "none";
+  const recurrenceFrequency: RecurrenceFrequency = RECURRENCE_FREQUENCIES.includes(
+    recurrenceFrequencyRaw as RecurrenceFrequency,
+  )
+    ? (recurrenceFrequencyRaw as RecurrenceFrequency)
+    : "none";
+
+  const recurrenceInterval = Math.max(
+    1,
+    parseInt((formData.get("recurrenceInterval") as string) || "1", 10) || 1,
+  );
+
+  const recurrenceDaysOfWeek = formData
+    .getAll("recurrenceDaysOfWeek")
+    .map((value) => parseInt(value as string, 10))
+    .filter((value) => !Number.isNaN(value));
+
+  if (recurrenceFrequency === "weekly" && recurrenceDaysOfWeek.length === 0) {
+    throw new Error("Selecione ao menos um dia da semana para a recorrência");
+  }
+
+  const recurrenceEndDateRaw = (formData.get("recurrenceEndDate") as string) || "";
+  const recurrenceEndDate = recurrenceEndDateRaw || null;
+
   return {
     title,
     description,
     start_at: startAt.toISOString(),
     all_day: allDay,
     category_id: categoryId,
-    completed_at: completed ? new Date().toISOString() : null,
+    completed_at: recurrenceFrequency === "none" && completed ? new Date().toISOString() : null,
+    recurrence_frequency: recurrenceFrequency,
+    recurrence_interval: recurrenceInterval,
+    recurrence_days_of_week: recurrenceFrequency === "weekly" ? recurrenceDaysOfWeek : null,
+    recurrence_end_date: recurrenceFrequency === "none" ? null : recurrenceEndDate,
   };
 }
 

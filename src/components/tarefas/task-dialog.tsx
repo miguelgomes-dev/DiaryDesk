@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Dialog } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
@@ -11,6 +11,8 @@ import { createTask, updateTask, deleteTask } from "@/app/actions/tasks";
 
 export type TaskCategory = { id: string; name: string; color: string };
 
+export type RecurrenceFrequency = "none" | "daily" | "weekly" | "monthly";
+
 export type Task = {
   id: string;
   title: string;
@@ -19,6 +21,26 @@ export type Task = {
   all_day: boolean;
   category_id: string | null;
   completed_at: string | null;
+  recurrence_frequency: RecurrenceFrequency;
+  recurrence_interval: number;
+  recurrence_days_of_week: number[] | null;
+  recurrence_end_date: string | null;
+};
+
+const WEEKDAYS = [
+  { value: 0, label: "D" },
+  { value: 1, label: "S" },
+  { value: 2, label: "T" },
+  { value: 3, label: "Q" },
+  { value: 4, label: "Q" },
+  { value: 5, label: "S" },
+  { value: 6, label: "S" },
+];
+
+const INTERVAL_UNIT: Record<Exclude<RecurrenceFrequency, "none">, string> = {
+  daily: "dia(s)",
+  weekly: "semana(s)",
+  monthly: "mês(es)",
 };
 
 export type TaskDialogTarget =
@@ -127,82 +149,176 @@ export const TaskDialog = forwardRef<
       }}
     >
       {target && (
-        <form
+        <TaskForm
           key={isEdit ? task!.id : `create-${target.date}`}
-          action={handleSubmit}
-          className="flex flex-col gap-4"
-        >
-          <h2 className="font-serif text-lg italic">
-            {isEdit ? "Editar tarefa" : "Nova tarefa"}
-          </h2>
-
-          {isEdit && <input type="hidden" name="id" value={task!.id} />}
-
-          <Field label="Título">
-            <Input name="title" defaultValue={task?.title} required autoFocus />
-          </Field>
-
-          <div className="flex gap-3">
-            <Field label="Data">
-              <Input
-                type="date"
-                name="date"
-                defaultValue={defaultDate}
-                required
-              />
-            </Field>
-            <Field label="Horário (opcional)">
-              <Input type="time" name="time" defaultValue={defaultTime} />
-            </Field>
-          </div>
-
-          <Field label="Categoria">
-            <select
-              name="categoryId"
-              defaultValue={task?.category_id ?? ""}
-              className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-            >
-              <option value="">Sem categoria</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Descrição (opcional)">
-            <textarea
-              name="description"
-              defaultValue={task?.description ?? ""}
-              rows={3}
-              className="w-full rounded-md border border-foreground/20 bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </Field>
-
-          {isEdit && (
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                name="completed"
-                defaultChecked={!!task!.completed_at}
-                className="size-4 accent-accent"
-              />
-              Concluída
-            </label>
-          )}
-
-          <div className="flex items-center justify-between gap-2 pt-2">
-            {isEdit ? <DeleteButton action={handleDelete} /> : <span />}
-            <div className="flex gap-2">
-              <Button type="button" variant="secondary" onClick={onClose}>
-                Cancelar
-              </Button>
-              <SaveButton />
-            </div>
-          </div>
-        </form>
+          isEdit={isEdit}
+          task={task}
+          categories={categories}
+          defaultDate={defaultDate}
+          defaultTime={defaultTime}
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+          onClose={onClose}
+        />
       )}
     </Dialog>
   );
 });
+
+function TaskForm({
+  isEdit,
+  task,
+  categories,
+  defaultDate,
+  defaultTime,
+  onSubmit,
+  onDelete,
+  onClose,
+}: {
+  isEdit: boolean;
+  task: Task | null;
+  categories: TaskCategory[];
+  defaultDate: string;
+  defaultTime: string;
+  onSubmit: (formData: FormData) => Promise<void>;
+  onDelete: (formData: FormData) => Promise<void>;
+  onClose: () => void;
+}) {
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState<RecurrenceFrequency>(
+    task?.recurrence_frequency ?? "none",
+  );
+
+  return (
+    <form action={onSubmit} className="flex flex-col gap-4">
+      <h2 className="font-serif text-lg italic">
+        {isEdit ? "Editar tarefa" : "Nova tarefa"}
+      </h2>
+
+      {isEdit && <input type="hidden" name="id" value={task!.id} />}
+
+      <Field label="Título">
+        <Input name="title" defaultValue={task?.title} required autoFocus />
+      </Field>
+
+      <div className="flex gap-3">
+        <Field label="Data">
+          <Input type="date" name="date" defaultValue={defaultDate} required />
+        </Field>
+        <Field label="Horário (opcional)">
+          <Input type="time" name="time" defaultValue={defaultTime} />
+        </Field>
+      </div>
+
+      <Field label="Categoria">
+        <select
+          name="categoryId"
+          defaultValue={task?.category_id ?? ""}
+          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
+        >
+          <option value="">Sem categoria</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label="Descrição (opcional)">
+        <textarea
+          name="description"
+          defaultValue={task?.description ?? ""}
+          rows={3}
+          className="w-full rounded-md border border-foreground/20 bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
+        />
+      </Field>
+
+      <Field label="Repetir">
+        <select
+          name="recurrenceFrequency"
+          value={recurrenceFrequency}
+          onChange={(event) =>
+            setRecurrenceFrequency(event.target.value as RecurrenceFrequency)
+          }
+          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
+        >
+          <option value="none">Nenhuma</option>
+          <option value="daily">Diariamente</option>
+          <option value="weekly">Semanalmente</option>
+          <option value="monthly">Mensalmente</option>
+        </select>
+      </Field>
+
+      {recurrenceFrequency !== "none" && (
+        <>
+          <Field label={`A cada (${INTERVAL_UNIT[recurrenceFrequency]})`}>
+            <Input
+              type="number"
+              name="recurrenceInterval"
+              min={1}
+              defaultValue={task?.recurrence_interval ?? 1}
+            />
+          </Field>
+
+          {recurrenceFrequency === "weekly" && (
+            <fieldset className="flex flex-col gap-1.5">
+              <legend className="text-sm font-medium">Dias da semana</legend>
+              <div className="flex gap-1.5">
+                {WEEKDAYS.map((day) => (
+                  <label
+                    key={day.value}
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-foreground/20 text-xs font-medium has-[:checked]:border-accent has-[:checked]:bg-accent has-[:checked]:text-background"
+                  >
+                    <input
+                      type="checkbox"
+                      name="recurrenceDaysOfWeek"
+                      value={day.value}
+                      defaultChecked={task?.recurrence_days_of_week?.includes(day.value)}
+                      className="sr-only"
+                    />
+                    {day.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
+          <Field label="Repetir até (opcional)">
+            <Input
+              type="date"
+              name="recurrenceEndDate"
+              defaultValue={task?.recurrence_end_date ?? ""}
+            />
+          </Field>
+        </>
+      )}
+
+      {isEdit &&
+        (task!.recurrence_frequency === "none" ? (
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="completed"
+              defaultChecked={!!task!.completed_at}
+              className="size-4 accent-accent"
+            />
+            Concluída
+          </label>
+        ) : (
+          <p className="text-xs text-foreground/60">
+            Marque cada ocorrência direto no calendário.
+          </p>
+        ))}
+
+      <div className="flex items-center justify-between gap-2 pt-2">
+        {isEdit ? <DeleteButton action={onDelete} /> : <span />}
+        <div className="flex gap-2">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancelar
+          </Button>
+          <SaveButton />
+        </div>
+      </div>
+    </form>
+  );
+}

@@ -30,9 +30,10 @@ Nota técnica importante: este Next.js é a v16, que **renomeou `middleware` par
 
 Cada grupo é uma fatia vertical (schema já existe → Server Actions/Route Handlers → UI) e pode ser feito e testado isoladamente após a Fase 0.
 
-1. **Tarefas (CRUD básico)** — `tasks` sem recorrência ainda, com UI de calendário (`@fullcalendar/react` + `daygrid` + `interaction`, clicar no dia para adicionar) reaproveitado depois no grupo 3. Inclui CRUD de `task_categories` (tags): cada usuário recebe 5 categorias default no primeiro login (Trabalho, Faculdade, Amor, Saúde, Casa) e pode adicionar/renomear/remover as próprias.
-2. **Recorrência de tarefas** — `recurrence_*` + `task_completions` (marcar ocorrência como feita/pulada).
-3. **Calendário unificado** — view mês/semana consumindo a view `calendar_events` e a função `expand_task_occurrences` para expandir recorrências no range visível. *(depende de 1 e 2)*
+1. ✅ **Tarefas (CRUD básico)** — `tasks` sem recorrência ainda, com UI de calendário (`@fullcalendar/react` + `daygrid` + `interaction`, clicar no dia para adicionar) reaproveitado depois no grupo 3. Inclui CRUD de `task_categories` (tags): cada usuário recebe 5 categorias default no primeiro login (Trabalho, Faculdade, Amor, Saúde, Casa) e pode adicionar/renomear/remover as próprias.
+2. ✅ **Recorrência de tarefas** — `recurrence_*` no formulário de tarefa (frequência, intervalo, dias da semana, data final) + `task_completions` (marcar ocorrência como feita/pulada, com desfazer). Implementado junto com o Item 3.
+3. ✅ **Calendário unificado** — o calendário de `/tarefas` agora combina tarefas não-recorrentes, ocorrências expandidas de tarefas recorrentes e (via `calendar_events` filtrada a `source_type in ('faculdade','trabalho')`) o que vier dos grupos 8/9 quando existirem. *(depende de 1 e 2 — concluído)*
+   - **Desvio da função SQL `expand_task_occurrences`**: a função usa `generate_series` com passo fixo de N semanas a partir da data de início, o que só revisita o mesmo dia da semana do início — não suporta uma regra semanal com múltiplos dias da semana (ex: seg+qui), que o formulário permite selecionar. A expansão de ocorrências foi movida para TypeScript (`src/app/actions/task-occurrences.ts`), como o próprio comentário do schema já sugeria ("considere mover isso para a aplicação"). A função SQL continua no banco mas não é mais usada pelo app.
 4. **Financeiro — lançamentos manuais** — `transaction_categories` + `transactions`.
 5. **Financeiro — investimentos** — `investment_snapshots` + resumo mensal simples.
 6. **Saúde — peso** — `weight_logs` (log + gráfico simples de evolução).
