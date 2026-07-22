@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { verifySession } from "@/lib/dal";
 import { logout } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { AppNav } from "@/components/app-shell/nav";
+import { Logo } from "@/components/app-shell/logo";
 
 export default async function AppLayout({
   children,
@@ -15,12 +15,7 @@ export default async function AppLayout({
     <div className="flex min-h-screen flex-col md:flex-row">
       <aside className="flex flex-col border-b border-foreground/10 md:w-56 md:shrink-0 md:border-b-0 md:border-r">
         <div className="flex items-center justify-between px-6 py-4 md:px-5 md:py-6">
-          <Link href="/" className="leading-none">
-            <span className="font-serif text-lg italic">Diary</span>
-            <span className="ml-0.5 font-mono text-[0.65rem] font-medium tracking-[0.2em] text-foreground/50">
-              DESK
-            </span>
-          </Link>
+          <Logo size="sm" href="/" />
           <form action={logout} className="md:hidden">
             <Button type="submit" variant="ghost" className="h-8 px-2 text-xs">
               Sair

@@ -30,9 +30,9 @@
   --color-thread-amor: var(--thread-amor);
   --color-thread-saude: var(--thread-saude);
   --color-thread-casa: var(--thread-casa);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-karla);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-serif: var(--font-petrona);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,6 +42,29 @@
     --accent: #86a9dc;
     --danger: #f87171;
   }
+}
+
+/* Isolated from the variable-toggle block above: Lightning CSS (Tailwind v4's
+   CSS processor) rewrites :root blocks under this media query into a
+   custom-property light/dark toggle, and silently drops any plain
+   (non-variable) declaration mixed into that same block — so color-scheme
+   needs its own :root rule per mode instead of living alongside the vars. */
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Belt-and-suspenders for the rule above: some Chromium builds render the
+   native <select> popup with a light background regardless of color-scheme.
+   Explicit colors on <option> are honored even when that happens. */
+select option {
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 body {
