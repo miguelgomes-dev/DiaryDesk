@@ -67,20 +67,31 @@ select option {
   color: var(--foreground);
 }
 
+/* input[type=color] swatches (category pickers): browsers inset the actual
+   color swatch inside a padded native frame, leaving a visible border-within-
+   a-border. Strip that frame so the color fills the box we already round
+   and border via Tailwind classes. */
+input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  border-width: 1px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: inherit;
+}
+input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: inherit;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-}
-
-/* Faint ruled-paper lines behind the working area — a page, not decoration. */
-.ruled {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 27px,
-    color-mix(in srgb, var(--foreground) 7%, transparent) 27px,
-    color-mix(in srgb, var(--foreground) 7%, transparent) 28px
-  );
 }
 
 /*

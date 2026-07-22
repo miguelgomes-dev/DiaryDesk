@@ -34,7 +34,7 @@ Cada grupo é uma fatia vertical (schema já existe → Server Actions/Route Han
 2. ✅ **Recorrência de tarefas** — `recurrence_*` no formulário de tarefa (frequência, intervalo, dias da semana, data final) + `task_completions` (marcar ocorrência como feita/pulada, com desfazer). Implementado junto com o Item 3.
 3. ✅ **Calendário unificado** — o calendário de `/tarefas` agora combina tarefas não-recorrentes, ocorrências expandidas de tarefas recorrentes e (via `calendar_events` filtrada a `source_type in ('faculdade','trabalho')`) o que vier dos grupos 8/9 quando existirem. *(depende de 1 e 2 — concluído)*
    - **Desvio da função SQL `expand_task_occurrences`**: a função usa `generate_series` com passo fixo de N semanas a partir da data de início, o que só revisita o mesmo dia da semana do início — não suporta uma regra semanal com múltiplos dias da semana (ex: seg+qui), que o formulário permite selecionar. A expansão de ocorrências foi movida para TypeScript (`src/app/actions/task-occurrences.ts`), como o próprio comentário do schema já sugeria ("considere mover isso para a aplicação"). A função SQL continua no banco mas não é mais usada pelo app.
-4. **Financeiro — lançamentos manuais** — `transaction_categories` + `transactions`.
+4. ✅ **Financeiro — lançamentos manuais** — `transaction_categories` (com tipo receita/despesa) + `transactions`. Lista por mês estilo livro-caixa (`?month=YYYY-MM` na URL) com resumo de receitas/despesas/saldo do período.
 5. **Financeiro — investimentos** — `investment_snapshots` + resumo mensal simples.
 6. **Saúde — peso** — `weight_logs` (log + gráfico simples de evolução).
 7. **Saúde — exames e consultas** — upload de PDF pro Storage com `retention_expires_on` (~1 ano), `health_appointments`.
