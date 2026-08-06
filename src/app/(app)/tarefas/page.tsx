@@ -1,7 +1,8 @@
+import { CalendarCheck } from "lucide-react";
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { utcIsoToZonedIso } from "@/lib/timezone";
-import { CategoryManager } from "@/components/tarefas/category-manager";
+import { SectionTitle } from "@/components/ui/section-title";
 import { TasksCalendar } from "@/components/tarefas/tasks-calendar";
 import type { Task } from "@/components/tarefas/task-dialog";
 
@@ -46,8 +47,9 @@ export default async function TarefasPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Tarefas</h1>
-      <CategoryManager categories={categories ?? []} />
+      <SectionTitle icon={CalendarCheck} color="var(--accent)">
+        Tarefas
+      </SectionTitle>
       <TasksCalendar
         singleTasks={singleTasks}
         recurringTasks={recurringTasks}

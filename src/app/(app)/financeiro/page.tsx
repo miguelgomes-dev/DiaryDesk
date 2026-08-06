@@ -1,6 +1,7 @@
+import { Wallet } from "lucide-react";
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
-import { TransactionCategoryManager } from "@/components/financeiro/transaction-category-manager";
+import { SectionTitle } from "@/components/ui/section-title";
 import { TransactionsLedger } from "@/components/financeiro/transactions-ledger";
 
 function resolveMonth(monthParam: string | undefined) {
@@ -47,8 +48,9 @@ export default async function FinanceiroPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Financeiro</h1>
-      <TransactionCategoryManager categories={categories ?? []} />
+      <SectionTitle icon={Wallet} color="var(--thread-casa)">
+        Financeiro
+      </SectionTitle>
       <TransactionsLedger
         transactions={transactions ?? []}
         categories={categories ?? []}

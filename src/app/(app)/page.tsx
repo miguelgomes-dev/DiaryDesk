@@ -1,4 +1,5 @@
-import { CalendarCheck } from "lucide-react";
+import { CalendarCheck, LayoutGrid } from "lucide-react";
+import { SectionTitle } from "@/components/ui/section-title";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export default function DashboardPage() {
@@ -10,12 +11,17 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <span className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50">
-          {today}
-        </span>
-        <h1 className="text-3xl font-[650] tracking-[-0.033em]">Dashboard</h1>
-      </div>
+      <SectionTitle
+        icon={LayoutGrid}
+        color="var(--foreground)"
+        eyebrow={
+          <span className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50">
+            {today}
+          </span>
+        }
+      >
+        Dashboard
+      </SectionTitle>
       <EmptyState
         icon={CalendarCheck}
         title="Nenhum compromisso lançado ainda"

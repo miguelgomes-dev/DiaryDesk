@@ -1,10 +1,13 @@
 import { GraduationCap } from "lucide-react";
+import { SectionTitle } from "@/components/ui/section-title";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export default function FaculdadePage() {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Faculdade</h1>
+      <SectionTitle icon={GraduationCap} color="var(--thread-faculdade)">
+        Faculdade
+      </SectionTitle>
       <EmptyState
         icon={GraduationCap}
         title="Nenhuma disciplina cadastrada"

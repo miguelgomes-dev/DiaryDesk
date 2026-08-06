@@ -9,6 +9,7 @@ import {
   Heart,
   GraduationCap,
   Briefcase,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,6 +20,7 @@ const NAV_ITEMS: { href: string; label: string; thread: string; icon: LucideIcon
   { href: "/saude", label: "Saúde", thread: "var(--thread-saude)", icon: Heart },
   { href: "/faculdade", label: "Faculdade", thread: "var(--thread-faculdade)", icon: GraduationCap },
   { href: "/trabalho", label: "Trabalho", thread: "var(--thread-trabalho)", icon: Briefcase },
+  { href: "/configuracoes", label: "Configurações", thread: "var(--foreground)", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {

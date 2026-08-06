@@ -22,6 +22,7 @@ export async function createTaskCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/tarefas");
 }
 
@@ -45,6 +46,7 @@ export async function renameTaskCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/tarefas");
 }
 
@@ -62,5 +64,6 @@ export async function deleteTaskCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/tarefas");
 }

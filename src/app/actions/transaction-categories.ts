@@ -26,6 +26,7 @@ export async function createTransactionCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/financeiro");
 }
 
@@ -53,6 +54,7 @@ export async function renameTransactionCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/financeiro");
 }
 
@@ -70,5 +72,6 @@ export async function deleteTransactionCategory(formData: FormData) {
     throw new Error(error.message);
   }
 
+  revalidatePath("/configuracoes");
   revalidatePath("/financeiro");
 }
