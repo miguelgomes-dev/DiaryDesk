@@ -133,7 +133,13 @@ export function TasksCalendar({
       otherEvents.map((event) => ({
         id: `other:${event.source_id}`,
         title: event.title,
-        start: event.start_at,
+        // event.start_at é o due_date de Faculdade/Trabalho, cru em UTC
+        // (calendar_events faz due_date::timestamptz = meia-noite UTC).
+        // Sempre all_day aqui — passar só a data evita que o FullCalendar
+        // converta o instante para o fuso do navegador antes de decidir em
+        // que dia cair, o que jogaria o evento pro dia anterior em fusos
+        // negativos (ex: Brasil).
+        start: event.start_at.slice(0, 10),
         allDay: event.all_day,
         classNames: ["opacity-70"],
       })),

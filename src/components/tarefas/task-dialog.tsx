@@ -47,15 +47,16 @@ export type TaskDialogTarget =
   | { mode: "create"; date: string }
   | { mode: "edit"; task: Task };
 
+// task.start_at chega aqui já convertido para hora de parede de Brasília
+// (ver utcIsoToZonedIso em tarefas/page.tsx) — por isso é seguro só fatiar
+// a string, sem nunca passar por `new Date()` (que reintroduziria o fuso
+// do navegador de quem está vendo a tela).
 function toDateInputValue(iso: string) {
   return iso.slice(0, 10);
 }
 
 function toTimeInputValue(iso: string) {
-  const date = new Date(iso);
-  return `${String(date.getHours()).padStart(2, "0")}:${String(
-    date.getMinutes(),
-  ).padStart(2, "0")}`;
+  return iso.slice(11, 16);
 }
 
 function SaveButton() {

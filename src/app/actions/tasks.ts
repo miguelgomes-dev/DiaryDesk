@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
+import { zonedWallClockToUtcIso } from "@/lib/timezone";
 
 const RECURRENCE_FREQUENCIES = ["none", "daily", "weekly", "monthly"] as const;
 type RecurrenceFrequency = (typeof RECURRENCE_FREQUENCIES)[number];
@@ -20,7 +21,7 @@ function readTaskFields(formData: FormData) {
 
   const time = (formData.get("time") as string) || "";
   const allDay = time === "";
-  const startAt = new Date(allDay ? `${date}T00:00:00` : `${date}T${time}:00`);
+  const startAt = zonedWallClockToUtcIso(date, allDay ? "00:00" : time);
 
   const categoryId = (formData.get("categoryId") as string) || null;
   const description = (formData.get("description") as string)?.trim() || null;
@@ -53,7 +54,7 @@ function readTaskFields(formData: FormData) {
   return {
     title,
     description,
-    start_at: startAt.toISOString(),
+    start_at: startAt,
     all_day: allDay,
     category_id: categoryId,
     completed_at: recurrenceFrequency === "none" && completed ? new Date().toISOString() : null,

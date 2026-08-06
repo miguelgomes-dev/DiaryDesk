@@ -1,5 +1,6 @@
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
+import { utcIsoToZonedIso } from "@/lib/timezone";
 import { CategoryManager } from "@/components/tarefas/category-manager";
 import { TasksCalendar } from "@/components/tarefas/tasks-calendar";
 import type { Task } from "@/components/tarefas/task-dialog";
@@ -28,7 +29,14 @@ export default async function TarefasPage() {
         .in("source_type", ["faculdade", "trabalho"]),
     ]);
 
-  const allTasks = (tasks ?? []) as Task[];
+  // start_at vem do banco como instante UTC (timestamptz); convertido aqui,
+  // uma única vez, para hora de parede de Brasília. Componentes client-side
+  // recebem só a string "ingênua" resultante e nunca precisam saber que o
+  // banco guarda UTC — evita depender do fuso do navegador de quem vê a tela.
+  const allTasks = (tasks ?? []).map((task) => ({
+    ...task,
+    start_at: utcIsoToZonedIso(task.start_at),
+  })) as Task[];
   const singleTasks = allTasks.filter(
     (task) => task.recurrence_frequency === "none",
   );

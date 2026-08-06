@@ -38,6 +38,10 @@ create table public.tasks (
   category_id uuid references public.task_categories(id) on delete set null,
   title text not null,
   description text,
+  -- Instante UTC real. O app assume um único fuso fixo (America/Sao_Paulo,
+  -- ver src/lib/timezone.ts) na escrita e na leitura — nunca confiar em
+  -- `new Date()` cru sobre esses campos, nem no lado do servidor nem no
+  -- navegador, ou o horário vira o fuso de quem/onde estiver rodando.
   start_at timestamptz not null,
   end_at timestamptz,
   all_day boolean not null default false,

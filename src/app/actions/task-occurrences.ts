@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
+import { utcIsoToZonedIso } from "@/lib/timezone";
 
 export type TaskOccurrence = {
   taskId: string;
@@ -113,6 +114,14 @@ export async function getTaskOccurrences(
     throw new Error(tasksError.message);
   }
 
+  // start_at vem do banco como instante UTC; a recorrência abaixo é
+  // pensada em dias de calendário de Brasília (ex: "toda sexta"), então
+  // precisa do dia local antes de entrar na aritmética em UTC.
+  const zonedRecurringTasks = (recurringTasks ?? []).map((task) => ({
+    ...task,
+    start_at: utcIsoToZonedIso(task.start_at),
+  })) as RecurringTaskRow[];
+
   const statusByKey = new Map(
     (completions ?? []).map((completion) => [
       `${completion.task_id}:${completion.occurrence_date}`,
@@ -124,7 +133,7 @@ export async function getTaskOccurrences(
   const rangeEndDay = toDayNumber(rangeEnd);
 
   const occurrences: TaskOccurrence[] = [];
-  for (const task of (recurringTasks ?? []) as RecurringTaskRow[]) {
+  for (const task of zonedRecurringTasks) {
     for (const day of expandTask(task, rangeStartDay, rangeEndDay)) {
       const occurrenceDate = fromDayNumber(day);
       occurrences.push({
