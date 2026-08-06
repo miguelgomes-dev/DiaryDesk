@@ -14,10 +14,31 @@
 
   /* category "thread" colors — mirrors DEFAULT_TASK_CATEGORIES in dal.ts */
   --thread-trabalho: #2563eb;
-  --thread-faculdade: #7c3aed;
+  --thread-faculdade: #0891b2;
   --thread-amor: #db2777;
   --thread-saude: #16a34a;
   --thread-casa: #d97706;
+
+  /* state colors (docs/styleguide.html, Paleta) — a reserved family: says
+     what situation something is in (done, expiring, below average). Never
+     reuse a category "thread" color for state, or the reverse; own values
+     in dark mode, not just the light ones dimmed. */
+  --ok: #15803d;
+  --warn: #b45309;
+  --crit: #b91c1c;
+
+  /* structural tokens (docs/styleguide.html) — color-mix ones are relative
+     to --foreground, so they don't need their own dark-mode override. */
+  --line: color-mix(in srgb, var(--foreground) 13%, transparent);
+  --line-soft: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --surface: color-mix(in srgb, var(--foreground) 2.5%, transparent);
+  --surface-2: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --muted: color-mix(in srgb, var(--foreground) 62%, transparent);
+  --muted-2: color-mix(in srgb, var(--foreground) 46%, transparent);
+  --btn-sheen: rgba(255, 255, 255, 0.13);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.07);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.09), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-pop: 0 10px 28px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 @theme inline {
@@ -25,14 +46,16 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
   --color-thread-trabalho: var(--thread-trabalho);
   --color-thread-faculdade: var(--thread-faculdade);
   --color-thread-amor: var(--thread-amor);
   --color-thread-saude: var(--thread-saude);
   --color-thread-casa: var(--thread-casa);
-  --font-sans: var(--font-karla);
-  --font-mono: var(--font-ibm-plex-mono);
-  --font-serif: var(--font-petrona);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,6 +64,14 @@
     --foreground: #ebe7da; /* parchment */
     --accent: #86a9dc;
     --danger: #f87171;
+    /* own dark-mode values, not the light ones dimmed */
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --crit: #f87171;
+    /* inverted: primary buttons show var(--foreground), which is now a
+       light fill, so the sheen needs to be a dark highlight instead. */
+    --btn-sheen: rgba(0, 0, 0, 0.07);
+    --shadow-pop: 0 10px 28px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -94,34 +125,6 @@ body {
   color: var(--foreground);
 }
 
-/*
-  Ribbon bookmark — the one signature motif. A thread-colored page marker,
-  like the ribbons sewn into a ledger's spine. Two placements: ribbon-nav
-  flags the current section in the sidebar; ribbon-card marks a card as an
-  unwritten page. Shape and shadow shared; position varies by use.
-*/
-.ribbon {
-  position: absolute;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18));
-}
-
-.ribbon-nav {
-  top: 50%;
-  right: -13px;
-  width: 15px;
-  height: 24px;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-
-.ribbon-card {
-  top: -8px;
-  left: 28px;
-  width: 18px;
-  height: 28px;
-}
-
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -165,9 +168,8 @@ body {
 }
 
 .fc-theme .fc-toolbar-title {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 650;
+  letter-spacing: -0.033em;
   text-transform: capitalize;
 }
 

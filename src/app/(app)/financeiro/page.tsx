@@ -47,7 +47,7 @@ export default async function FinanceiroPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-serif text-3xl italic">Financeiro</h1>
+      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Financeiro</h1>
       <TransactionCategoryManager categories={categories ?? []} />
       <TransactionsLedger
         transactions={transactions ?? []}

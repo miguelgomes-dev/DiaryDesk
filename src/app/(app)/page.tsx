@@ -1,4 +1,5 @@
-import { Card } from "@/components/ui/card";
+import { CalendarCheck } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function DashboardPage() {
   const today = new Intl.DateTimeFormat("pt-BR", {
@@ -13,15 +14,13 @@ export default function DashboardPage() {
         <span className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50">
           {today}
         </span>
-        <h1 className="font-serif text-3xl italic">Dashboard</h1>
+        <h1 className="text-3xl font-[650] tracking-[-0.033em]">Dashboard</h1>
       </div>
-      <Card ribbon="var(--accent)" className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium">Nenhum compromisso lançado ainda.</p>
-        <p className="text-sm text-foreground/70">
-          Quando tarefas, aulas e prazos de trabalho entrarem no calendário
-          unificado, o dia de hoje aparece resumido aqui.
-        </p>
-      </Card>
+      <EmptyState
+        icon={CalendarCheck}
+        title="Nenhum compromisso lançado ainda"
+        description="Quando tarefas, aulas e prazos de trabalho entrarem no calendário unificado, o dia de hoje aparece resumido aqui."
+      />
     </div>
   );
 }

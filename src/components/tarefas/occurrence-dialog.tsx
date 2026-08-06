@@ -115,7 +115,7 @@ export const OccurrenceDialog = forwardRef<
       {occurrence && (
         <div className="flex flex-col gap-4">
           <div>
-            <h2 className="font-serif text-lg italic">{occurrence.title}</h2>
+            <h2 className="text-lg font-[640] tracking-[-0.025em]">{occurrence.title}</h2>
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-foreground/50">
               {formattedDate}
             </p>

@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dropdown } from "@/components/ui/dropdown";
 import { useToast } from "@/components/ui/toast";
 import {
   createTransactionCategory,
@@ -18,6 +19,15 @@ export type TransactionCategory = {
   type: "income" | "expense";
   color: string | null;
 };
+
+const TYPE_GROUPS = [
+  {
+    options: [
+      { value: "income", label: "Receita" },
+      { value: "expense", label: "Despesa" },
+    ],
+  },
+];
 
 function AddButton() {
   const { pending } = useFormStatus();
@@ -76,14 +86,13 @@ function CategoryRow({ category }: { category: TransactionCategory }) {
           autoFocus
           className="h-8 w-36"
         />
-        <select
+        <Dropdown
           name="type"
           defaultValue={category.type}
-          className="h-8 rounded-md border border-foreground/20 bg-transparent px-2 text-sm outline-none focus:border-accent"
-        >
-          <option value="income">Receita</option>
-          <option value="expense">Despesa</option>
-        </select>
+          size="sm"
+          className="w-28"
+          groups={TYPE_GROUPS}
+        />
         <Button type="submit" variant="ghost" className="h-8 px-2">
           Salvar
         </Button>
@@ -194,15 +203,14 @@ export function TransactionCategoryManager({
           required
           className="h-8 w-40"
         />
-        <select
+        <Dropdown
           name="type"
           value={type}
-          onChange={(event) => setType(event.target.value as "income" | "expense")}
-          className="h-8 rounded-md border border-foreground/20 bg-transparent px-2 text-sm outline-none focus:border-accent"
-        >
-          <option value="expense">Despesa</option>
-          <option value="income">Receita</option>
-        </select>
+          onValueChange={(value) => setType(value as "income" | "expense")}
+          size="sm"
+          className="w-28"
+          groups={TYPE_GROUPS}
+        />
         <AddButton />
       </form>
     </Card>

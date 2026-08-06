@@ -13,8 +13,8 @@ export default async function LoginPage({
   const { error } = await searchParams;
 
   return (
-    <Card ribbon="var(--accent)" className="animate-rise">
-      <h1 className="mb-6 font-serif text-2xl italic">Entrar no DiaryDesk</h1>
+    <Card className="animate-rise">
+      <h1 className="mb-6 text-2xl font-[650] tracking-[-0.033em]">Entrar no DiaryDesk</h1>
       <form action={login} className="flex flex-col gap-4">
         <Field label="Email">
           <Input type="email" name="email" required autoComplete="email" />

@@ -87,7 +87,7 @@ export function TransactionsLedger({
   return (
     <Card className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-serif text-xl italic capitalize">{monthTitle}</h2>
+        <h2 className="text-xl font-[640] tracking-[-0.025em] capitalize">{monthTitle}</h2>
         <div className="flex items-center gap-2">
           <Link
             href={`/financeiro?month=${shiftMonth(monthDate, -1)}`}

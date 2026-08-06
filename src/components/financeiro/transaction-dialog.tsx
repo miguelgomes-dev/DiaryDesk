@@ -2,10 +2,12 @@
 
 import { forwardRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { Tag, X } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Dropdown } from "@/components/ui/dropdown";
 import { useToast } from "@/components/ui/toast";
 import {
   createTransaction,
@@ -154,22 +156,26 @@ function TransactionForm({
 
   return (
     <form action={onSubmit} className="flex flex-col gap-4">
-      <h2 className="font-serif text-lg italic">
+      <h2 className="text-lg font-[640] tracking-[-0.025em]">
         {isEdit ? "Editar lançamento" : "Novo lançamento"}
       </h2>
 
       {isEdit && <input type="hidden" name="id" value={transaction!.id} />}
 
       <Field label="Tipo">
-        <select
+        <Dropdown
           name="type"
           value={type}
-          onChange={(event) => setType(event.target.value as TransactionType)}
-          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-        >
-          <option value="expense">Despesa</option>
-          <option value="income">Receita</option>
-        </select>
+          onValueChange={(value) => setType(value as TransactionType)}
+          groups={[
+            {
+              options: [
+                { value: "expense", label: "Despesa" },
+                { value: "income", label: "Receita" },
+              ],
+            },
+          ]}
+        />
       </Field>
 
       <div className="flex gap-3">
@@ -194,18 +200,24 @@ function TransactionForm({
       </div>
 
       <Field label="Categoria">
-        <select
+        <Dropdown
+          key={type}
           name="categoryId"
           defaultValue={transaction?.category_id ?? ""}
-          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-        >
-          <option value="">Sem categoria</option>
-          {filteredCategories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+          placeholder="Sem categoria"
+          groups={[
+            {
+              label: type === "expense" ? "Despesas" : "Receitas",
+              options: filteredCategories.map((category) => ({
+                value: category.id,
+                label: category.name,
+                icon: Tag,
+                color: category.color ?? undefined,
+              })),
+            },
+            { options: [{ value: "", label: "Sem categoria", icon: X }] },
+          ]}
+        />
       </Field>
 
       <Field label="Descrição (opcional)">

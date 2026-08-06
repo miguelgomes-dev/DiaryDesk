@@ -2,10 +2,12 @@
 
 import { forwardRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { Tag, X } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Dropdown } from "@/components/ui/dropdown";
 import { useToast } from "@/components/ui/toast";
 import { createTask, updateTask, deleteTask } from "@/app/actions/tasks";
 
@@ -191,7 +193,7 @@ function TaskForm({
 
   return (
     <form action={onSubmit} className="flex flex-col gap-4">
-      <h2 className="font-serif text-lg italic">
+      <h2 className="text-lg font-[640] tracking-[-0.025em]">
         {isEdit ? "Editar tarefa" : "Nova tarefa"}
       </h2>
 
@@ -211,18 +213,23 @@ function TaskForm({
       </div>
 
       <Field label="Categoria">
-        <select
+        <Dropdown
           name="categoryId"
           defaultValue={task?.category_id ?? ""}
-          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-        >
-          <option value="">Sem categoria</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+          placeholder="Sem categoria"
+          groups={[
+            {
+              label: "Categorias",
+              options: categories.map((category) => ({
+                value: category.id,
+                label: category.name,
+                icon: Tag,
+                color: category.color,
+              })),
+            },
+            { options: [{ value: "", label: "Sem categoria", icon: X }] },
+          ]}
+        />
       </Field>
 
       <Field label="Descrição (opcional)">
@@ -235,19 +242,21 @@ function TaskForm({
       </Field>
 
       <Field label="Repetir">
-        <select
+        <Dropdown
           name="recurrenceFrequency"
           value={recurrenceFrequency}
-          onChange={(event) =>
-            setRecurrenceFrequency(event.target.value as RecurrenceFrequency)
-          }
-          className="h-10 w-full rounded-md border border-foreground/20 bg-transparent px-3 text-sm outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-        >
-          <option value="none">Nenhuma</option>
-          <option value="daily">Diariamente</option>
-          <option value="weekly">Semanalmente</option>
-          <option value="monthly">Mensalmente</option>
-        </select>
+          onValueChange={(value) => setRecurrenceFrequency(value as RecurrenceFrequency)}
+          groups={[
+            {
+              options: [
+                { value: "none", label: "Nenhuma" },
+                { value: "daily", label: "Diariamente" },
+                { value: "weekly", label: "Semanalmente" },
+                { value: "monthly", label: "Mensalmente" },
+              ],
+            },
+          ]}
+        />
       </Field>
 
       {recurrenceFrequency !== "none" && (

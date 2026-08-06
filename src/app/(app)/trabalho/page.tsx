@@ -1,16 +1,15 @@
-import { Card } from "@/components/ui/card";
+import { Briefcase } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function TrabalhoPage() {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-serif text-3xl italic">Trabalho</h1>
-      <Card ribbon="var(--thread-trabalho)" className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium">Nenhum projeto no quadro.</p>
-        <p className="text-sm text-foreground/70">
-          Um kanban simples para acompanhar o que está em andamento no
-          trabalho.
-        </p>
-      </Card>
+      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Trabalho</h1>
+      <EmptyState
+        icon={Briefcase}
+        title="Nenhum projeto no quadro"
+        description="Um kanban simples para acompanhar o que está em andamento no trabalho."
+      />
     </div>
   );
 }

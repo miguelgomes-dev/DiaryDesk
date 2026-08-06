@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const DEFAULT_TASK_CATEGORIES = [
   { name: "Trabalho", color: "#2563eb" },
-  { name: "Faculdade", color: "#7c3aed" },
+  { name: "Faculdade", color: "#0891b2" },
   { name: "Amor", color: "#db2777" },
   { name: "Saúde", color: "#16a34a" },
   { name: "Casa", color: "#d97706" },

@@ -13,8 +13,8 @@ export default async function SignupPage({
   const { error } = await searchParams;
 
   return (
-    <Card ribbon="var(--accent)" className="animate-rise">
-      <h1 className="mb-6 font-serif text-2xl italic">Criar conta</h1>
+    <Card className="animate-rise">
+      <h1 className="mb-6 text-2xl font-[650] tracking-[-0.033em]">Criar conta</h1>
       <form action={signup} className="flex flex-col gap-4">
         <Field label="Nome">
           <Input type="text" name="displayName" required autoComplete="name" />

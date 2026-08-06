@@ -26,7 +26,7 @@ export function Logo({ size = "lg", href = "/", className = "" }: LogoProps) {
           opacity="0.65"
         />
       </svg>
-      <span className={`font-serif italic ${text}`}>Diary Desk</span>
+      <span className={`font-[650] tracking-[-0.02em] ${text}`}>Diary Desk</span>
     </Link>
   );
 }

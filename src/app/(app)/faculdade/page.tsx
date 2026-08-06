@@ -1,16 +1,15 @@
-import { Card } from "@/components/ui/card";
+import { GraduationCap } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function FaculdadePage() {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-serif text-3xl italic">Faculdade</h1>
-      <Card ribbon="var(--thread-faculdade)" className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium">Nenhuma disciplina cadastrada.</p>
-        <p className="text-sm text-foreground/70">
-          Notas e médias entram aqui, com o cálculo da nota mínima pronto na
-          hora.
-        </p>
-      </Card>
+      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Faculdade</h1>
+      <EmptyState
+        icon={GraduationCap}
+        title="Nenhuma disciplina cadastrada"
+        description="Notas e médias entram aqui, com o cálculo da nota mínima pronto na hora."
+      />
     </div>
   );
 }

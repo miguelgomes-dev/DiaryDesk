@@ -46,7 +46,7 @@ export default async function TarefasPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-serif text-3xl italic">Tarefas</h1>
+      <h1 className="text-3xl font-[650] tracking-[-0.033em]">Tarefas</h1>
       <CategoryManager categories={categories ?? []} />
       <TasksCalendar
         singleTasks={singleTasks}
