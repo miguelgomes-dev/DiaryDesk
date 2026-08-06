@@ -24,6 +24,7 @@ export default async function TarefasPage() {
       supabase
         .from("calendar_events")
         .select("source_id, title, start_at, all_day, source_type")
+        .eq("user_id", user.id)
         .in("source_type", ["faculdade", "trabalho"]),
     ]);
 

@@ -211,7 +211,8 @@ create table public.push_subscriptions (
 -- — use a função expand_task_occurrences() abaixo para isso.
 -- ------------------------------------------------------------
 
-create view public.calendar_events as
+create view public.calendar_events
+with (security_invoker = true) as
 select
   t.id as source_id,
   t.user_id,
