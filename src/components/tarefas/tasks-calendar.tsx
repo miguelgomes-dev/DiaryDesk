@@ -28,6 +28,9 @@ export type OtherCalendarEvent = {
   source_type: "faculdade" | "trabalho";
 };
 
+const CALENDAR_PLUGINS = [dayGridPlugin, interactionPlugin];
+const CALENDAR_LOCALES = [ptBrLocale];
+
 const OCCURRENCE_ID_PREFIX = "occ:";
 
 function occurrenceId(taskId: string, occurrenceDate: string) {
@@ -199,9 +202,9 @@ export function TasksCalendar({
   return (
     <Card className="fc-theme">
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
+        plugins={CALENDAR_PLUGINS}
         initialView="dayGridMonth"
-        locales={[ptBrLocale]}
+        locales={CALENDAR_LOCALES}
         locale="pt-br"
         height="auto"
         events={events}
